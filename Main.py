@@ -1,5 +1,6 @@
-from PendulumMass import *
 import pygame
+
+from PendulumMass import *
 
 pygame.init()
 
@@ -8,9 +9,8 @@ display_width = 800
 display_height = 500
 display = pygame.display.set_mode((display_width, display_height))
 
-
-m1 = PendulumMass(1, 0, (int(display_width / 2), int(display_height / 2)), 100)
-m2 = PendulumMass(1, 0, m1.get_pos(), 100)
+m1 = PendulumMass(2, 0, (int(display_width / 2), int(display_height / 2)), 100)
+m2 = PendulumMass(-1, 0, m1.get_pos(), 100)
 dt = 0.02
 g = 10
 
@@ -27,11 +27,14 @@ def main():
                 pygame.quit()
                 quit()
         display.fill((255, 255, 255))
-        alpha1 = (-3 * g * sin(m1.theta) - g * sin(m1.theta - 2 * m2.theta) - 2 * sin(m1.theta - m2.theta) * (m2.omega ** 2 * m2.length - m1.omega ** 2 * m1.length * cos(m1.theta - m2.theta))) \
-                 / (m1.length * (3 - cos(2 * m1.theta - 2 * m2.theta)))
+        alpha1 = (-3 * g * sin(m1.theta) - g * sin(m1.theta - 2 * m2.theta) - 2 * sin(m1.theta - m2.theta) * (
+                m2.omega ** 2 * m2.length - m1.omega ** 2 * m1.length * cos(m1.theta - m2.theta))) \
+                 / (m1.length * (3 - cos(2 * m1.theta - 2 * m2.theta))) - 0.01 * m1.omega
         m1.update(dt, alpha1)
-        alpha2 = (2 * sin(m1.theta - m2.theta) * (m1.omega ** 2 * m1.length * 2 + g * 2 * cos(m1.theta) + m2.omega ** 2 * m2.length * cos(m1.theta - m2.theta))) \
-                 / (m2.length * (3 - cos(2 * m1.theta - 2 * m2.theta)))
+        alpha2 = (2 * sin(m1.theta - m2.theta) * (
+                m1.omega ** 2 * m1.length * 2 + g * 2 * cos(m1.theta) + m2.omega ** 2 * m2.length * cos(
+            m1.theta - m2.theta))) \
+                 / (m2.length * (3 - cos(2 * m1.theta - 2 * m2.theta))) - 0.01 * m2.omega
         m2.update(dt, alpha2)
         draw_mass(m1)
         draw_mass(m2)
